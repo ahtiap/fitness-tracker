@@ -37,9 +37,12 @@ app.post("/api/workouts", (req, res) => {
 });
 app.get("/api/workouts", (req, res) => {
   db.Workout.find({})
+    .limit(1)
+    .sort({ day: -1 })
     .populate("exercises")
     .then((dbWorkout) => {
       console.log(dbWorkout);
+      res.json(dbWorkout);
     })
     .catch(({ message }) => {
       console.log(message);
