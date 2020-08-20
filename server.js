@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 const PORT = process.env.PORT || 3000;
 
-const User = require("./userModel.js");
+const db = require("./models");
 
 const app = express();
 
@@ -23,7 +23,10 @@ mongoose.connect(
 );
 
 // Routes
-
+app.get("/exercise", (req, res) => {
+  res.redirect("exercise.html");
+});
+app.get("/api/workouts", (req, res) => {});
 // Route to post our form submission to mongoDB via mongoose
 app.post("/submit", ({ body }, res) => {
   // Create a new user using req.body
