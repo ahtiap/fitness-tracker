@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/custommethoddb",
+  process.env.MONGODB_URI || "mongodb://localhost/fitnesstracker",
   { useNewUrlParser: true }
 );
 
@@ -26,7 +26,41 @@ mongoose.connect(
 app.get("/exercise", (req, res) => {
   res.redirect("exercise.html");
 });
-app.get("/api/workouts", (req, res) => {});
+app.post("/api/workouts", (req, res) => {
+  db.Workout.create({})
+    .then((dbWorkout) => {
+      console.log(dbWorkout);
+    })
+    .catch(({ message }) => {
+      console.log(message);
+    });
+});
+app.get("/api/workouts", (req, res) => {
+  db.Workout.find({})
+    .populate("exercises")
+    .then((dbWorkout) => {
+      console.log(dbWorkout);
+    })
+    .catch(({ message }) => {
+      console.log(message);
+    });
+});
+app.put("/api/workouts/:id", ({ body }, res) => {
+  db.Exercise.create(body)
+    .then(({ _id }) =>
+      db.Workout.findOneAndUpdate(
+        {},
+        { $push: { exercises: _id } },
+        { new: true }
+      )
+    )
+    .then((dbExercise) => {
+      console.log(dbExercise);
+    })
+    .catch(({ message }) => {
+      console.log(message);
+    });
+});
 // Route to post our form submission to mongoDB via mongoose
 app.post("/submit", ({ body }, res) => {
   // Create a new user using req.body
